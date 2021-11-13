@@ -25,12 +25,12 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
 
-      - name: Download previous artifact
-        uses: dawidd6/action-download-artifact@v2
-        with:
-          workflow: main.yaml
-          workflow_conclusion: success
-          check_artifacts:  true
+      #- name: Download previous artifact
+      #  uses: dawidd6/action-download-artifact@v2
+      #  with:
+      #    workflow: main.yaml
+      #    workflow_conclusion: success
+      #    check_artifacts:  true
 
       - name: Install script dependencies
         if: always()
