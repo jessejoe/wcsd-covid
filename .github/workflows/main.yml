@@ -25,12 +25,14 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
 
-      - name: Cache Primes
-        id: cache-primes
+      - name: Cache HTML
         uses: actions/cache@v2
         with:
           path: saved_html.json
           key: previous_html
+          
+      - name: Run script
+        run: echo "1" >> saved_html.json
 
 #       - name: Install script dependencies
 #         run: pip install -r requirements.txt
