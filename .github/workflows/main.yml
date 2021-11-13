@@ -41,6 +41,8 @@ jobs:
 #           run_number: 21
           workflow_conclusion: success
           check_artifacts:  false
+          name: saved_html.json
+          path: saved_html.json          
 
 #       - name: Install script dependencies
 #         run: pip install -r requirements.txt
