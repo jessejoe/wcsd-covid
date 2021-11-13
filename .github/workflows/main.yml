@@ -25,21 +25,20 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
 
-      - name: Cache HTML
+      - name: Cache Primes
+        id: cache-primes
         uses: actions/cache@v2
         with:
-          path: saved_html.json
-          key: previous_html
+          path: prime-numbers
+          key: primes-key
 
-      - name: HTML Before script
-        run: cat saved_html.json
+      - name: Generate Prime Numbers
+        if: steps.cache-primes.outputs.cache-hit != 'true'
+        run: echo "Found cache"
 
-      - name: Run script
-        run: echo "1" >> saved_html.json
-
-      - name: HTML after script
-        run: cat saved_html.json
-
+      - name: Use Prime Numbers
+        run: echo "Using cache" && mkdir primes/ && echo 1 >> primes/1
+        
 #       - name: Install script dependencies
 #         run: pip install -r requirements.txt
         
