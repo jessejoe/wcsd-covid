@@ -25,13 +25,6 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
 
-      - name: run number with offset
-        env:
-            NUM: ${{ github.run_number }}
-        run: |
-            echo ::set-env name=GITHUB_RUN_NUMBER_WITH_OFFSET::$(($NUM-1))
-      - run: echo $GITHUB_RUN_NUMBER_WITH_OFFSET
-
       - name: Set the value
         id: step_one
         env:
