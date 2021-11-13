@@ -25,24 +25,12 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
 
-      - name: Set the value
-        env:
-            NUM: ${{ github.run_number }}
-        run: |
-          echo "GITHUB_RUN_NUMBER_WITH_OFFSET=$(($NUM-1))" >> $GITHUB_ENV
-      - name: Use the value
-        run: |
-          echo "${{ env.GITHUB_RUN_NUMBER_WITH_OFFSET }}"
-
-      - name: Download previous artifact
-        uses: dawidd6/action-download-artifact@v2
+      - name: Cache Primes
+        id: cache-primes
+        uses: actions/cache@v2
         with:
-          workflow: main.yaml
-#           run_number: 21
-          workflow_conclusion: success
-          check_artifacts: true
-          name: saved_html.json
-          path: saved_html.json          
+          path: saved_html.json
+          key: previous_html
 
 #       - name: Install script dependencies
 #         run: pip install -r requirements.txt
