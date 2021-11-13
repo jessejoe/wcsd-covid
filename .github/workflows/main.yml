@@ -30,9 +30,15 @@ jobs:
         with:
           path: saved_html.json
           key: previous_html
-          
+
+      - name: HTML Before script
+        run: cat saved_html.json
+
       - name: Run script
         run: echo "1" >> saved_html.json
+
+      - name: HTML after script
+        run: cat saved_html.json
 
 #       - name: Install script dependencies
 #         run: pip install -r requirements.txt
