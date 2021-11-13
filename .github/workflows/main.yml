@@ -40,7 +40,7 @@ jobs:
           workflow: main.yaml
 #           run_number: 21
           workflow_conclusion: success
-          check_artifacts:  false
+          check_artifacts: true
           name: saved_html.json
           path: saved_html.json          
 
