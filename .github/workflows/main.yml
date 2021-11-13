@@ -26,23 +26,21 @@ jobs:
       - uses: actions/checkout@v2
 
       - name: Set the value
-        id: step_one
         env:
             NUM: ${{ github.run_number }}
         run: |
           echo "GITHUB_RUN_NUMBER_WITH_OFFSET=$(($NUM-1))" >> $GITHUB_ENV
       - name: Use the value
-        id: step_two
         run: |
           echo "${{ env.GITHUB_RUN_NUMBER_WITH_OFFSET }}"
 
-#       - name: Download previous artifact
-#         uses: dawidd6/action-download-artifact@v2
-#         with:
-#           workflow: main.yaml
-#           run_number: ${{github.run_number}}
-#           workflow_conclusion: success
-#           check_artifacts:  true
+      - name: Download previous artifact
+        uses: dawidd6/action-download-artifact@v2
+        with:
+          workflow: main.yaml
+          run_number: ${{ env.GITHUB_RUN_NUMBER_WITH_OFFSET }}"
+          workflow_conclusion: success
+          check_artifacts:  true
 
 #       - name: Install script dependencies
 #         run: pip install -r requirements.txt
