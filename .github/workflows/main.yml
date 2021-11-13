@@ -34,10 +34,10 @@ jobs:
 
       - name: Generate Prime Numbers
         if: steps.cache-primes.outputs.cache-hit != 'true'
-        run: echo "Found cache"
+        run: mkdir primes/ && echo 1 >> primes/1
 
       - name: Use Prime Numbers
-        run: echo "Using cache" && mkdir primes/ && echo 1 >> primes/1
+        run: ls primes/
         
 #       - name: Install script dependencies
 #         run: pip install -r requirements.txt
