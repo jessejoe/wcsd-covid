@@ -32,6 +32,17 @@ jobs:
             echo ::set-env name=GITHUB_RUN_NUMBER_WITH_OFFSET::$(($NUM-1))
       - run: echo $GITHUB_RUN_NUMBER_WITH_OFFSET
 
+      - name: Set the value
+        id: step_one
+        env:
+            NUM: ${{ github.run_number }}
+        run: |
+          echo "GITHUB_RUN_NUMBER_WITH_OFFSET=$(($NUM-1))" >> $GITHUB_ENV
+      - name: Use the value
+        id: step_two
+        run: |
+          echo "${{ env.GITHUB_RUN_NUMBER_WITH_OFFSET }}"
+
 #       - name: Download previous artifact
 #         uses: dawidd6/action-download-artifact@v2
 #         with:
