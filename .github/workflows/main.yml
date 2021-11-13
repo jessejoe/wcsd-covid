@@ -40,7 +40,6 @@ jobs:
           workflow: main.yaml
           run_number: 21
           workflow_conclusion: success
-          check_artifacts:  true
 
 #       - name: Install script dependencies
 #         run: pip install -r requirements.txt
