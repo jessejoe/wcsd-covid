@@ -25,21 +25,29 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
 
-      - name: Download previous artifact
-        uses: dawidd6/action-download-artifact@v2
-        with:
-          workflow: main.yaml
-          workflow_conclusion: success
-          check_artifacts:  true
+      - name: run number with offset
+        env:
+            NUM: ${{ github.run_number }}
+        run: |
+            echo ::set-env name=GITHUB_RUN_NUMBER_WITH_OFFSET::$(($NUM-1))
+      - run: echo $GITHUB_RUN_NUMBER_WITH_OFFSET
 
-      - name: Install script dependencies
-        run: pip install -r requirements.txt
+#       - name: Download previous artifact
+#         uses: dawidd6/action-download-artifact@v2
+#         with:
+#           workflow: main.yaml
+#           run_number: ${{github.run_number}}
+#           workflow_conclusion: success
+#           check_artifacts:  true
+
+#       - name: Install script dependencies
+#         run: pip install -r requirements.txt
         
-      - name: Run script
-        run: python get-wcsd-covid-results.py
+#       - name: Run script
+#         run: python get-wcsd-covid-results.py
 
-      - name: Artifact saved HTML
-        uses: actions/upload-artifact@v2
-        with:
-          name: saved_html.json
-          path: saved_html.json
+#       - name: Artifact saved HTML
+#         uses: actions/upload-artifact@v2
+#         with:
+#           name: saved_html.json
+#           path: saved_html.json
