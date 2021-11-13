@@ -28,7 +28,7 @@ jobs:
       - name: Download previous artifact
         uses: dawidd6/action-download-artifact@v2
         with:
-          workflow: mail.yaml
+          workflow: main.yaml
           #workflow_conclusion: success
 
       #- name: Install script dependencies
