@@ -33,6 +33,7 @@ jobs:
         run: python get-wcsd-covid-results.py
 
       - name: Artifact saved HTML
+        if: always()
         uses: actions/upload-artifact@v2
         with:
           name: saved_html.json
