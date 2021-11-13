@@ -38,8 +38,9 @@ jobs:
         uses: dawidd6/action-download-artifact@v2
         with:
           workflow: main.yaml
-          run_number: 21
+#           run_number: 21
           workflow_conclusion: success
+          check_artifacts:  false
 
 #       - name: Install script dependencies
 #         run: pip install -r requirements.txt
