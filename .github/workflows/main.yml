@@ -31,3 +31,9 @@ jobs:
       # Runs a single command using the runners shell
       - name: Run script
         run: python get-wcsd-covid-results.py
+
+      - name: Artifact saved HTML
+        uses: actions/upload-artifact@v2
+        with:
+          name: saved_html.json
+          path: saved_html.json
