@@ -25,16 +25,22 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
 
-      - name: Install script dependencies
-        run: pip install -r requirements.txt
+      - name: Download previous artifact
+        uses: dawidd6/action-download-artifact@v2
+        with:
+          workflow: ${{ github.event.workflow_run.workflow_id }}
+          #workflow_conclusion: success
+
+      #- name: Install script dependencies
+      #  run: pip install -r requirements.txt
         
       # Runs a single command using the runners shell
-      - name: Run script
-        run: python get-wcsd-covid-results.py
+      #- name: Run script
+      #  run: python get-wcsd-covid-results.py
 
-      - name: Artifact saved HTML
-        if: always()
-        uses: actions/upload-artifact@v2
-        with:
-          name: saved_html.json
-          path: saved_html.json
+      #- name: Artifact saved HTML
+      #  if: always()
+      #  uses: actions/upload-artifact@v2
+      #  with:
+      #    name: saved_html.json
+      #    path: saved_html.json
