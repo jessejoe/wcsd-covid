@@ -37,7 +37,7 @@ jobs:
         run: mkdir primes/ && echo 1 >> primes/1
 
       - name: Use Prime Numbers
-        run: ls primes/
+        run: mkdir -p primes && touch primes/1
         
 #       - name: Install script dependencies
 #         run: pip install -r requirements.txt
