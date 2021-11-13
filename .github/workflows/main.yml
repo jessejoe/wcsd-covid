@@ -30,7 +30,7 @@ jobs:
         with:
           workflow: main.yaml
           run_id: 1456949738
-          path: .
+          path: ./
           #workflow_conclusion: success
 
       #- name: Install script dependencies
