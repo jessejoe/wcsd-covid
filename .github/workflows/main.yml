@@ -29,18 +29,16 @@ jobs:
         uses: dawidd6/action-download-artifact@v2
         with:
           workflow: main.yaml
-          run_id: 1456949738
-          path: ./
-          #workflow_conclusion: success
+          workflow_conclusion: success
 
-      #- name: Install script dependencies
-      #  run: pip install -r requirements.txt
+      - name: Install script dependencies
+        run: pip install -r requirements.txt
         
-      #- name: Run script
-      #  run: python get-wcsd-covid-results.py
+      - name: Run script
+        run: python get-wcsd-covid-results.py
 
-      #- name: Artifact saved HTML
-      #  uses: actions/upload-artifact@v2
-      #  with:
-      #    name: saved_html.json
-      #    path: saved_html.json
+      - name: Artifact saved HTML
+        uses: actions/upload-artifact@v2
+        with:
+          name: saved_html.json
+          path: saved_html.json
