@@ -32,16 +32,14 @@ jobs:
           run_id: 1456949738
           #workflow_conclusion: success
 
-      #- name: Install script dependencies
-      #  run: pip install -r requirements.txt
+      - name: Install script dependencies
+        run: pip install -r requirements.txt
         
-      # Runs a single command using the runners shell
-      #- name: Run script
-      #  run: python get-wcsd-covid-results.py
+      - name: Run script
+        run: python get-wcsd-covid-results.py
 
-      #- name: Artifact saved HTML
-      #  if: always()
-      #  uses: actions/upload-artifact@v2
-      #  with:
-      #    name: saved_html.json
-      #    path: saved_html.json
+      - name: Artifact saved HTML
+        uses: actions/upload-artifact@v2
+        with:
+          name: saved_html.json
+          path: saved_html.json
