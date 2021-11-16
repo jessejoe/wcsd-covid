@@ -48,7 +48,7 @@ main_netloc = urlunsplit(urlsplit(main_url)._replace(path=''))
 email = os.getenv('FLOURISH_USERNAME')
 password = os.getenv('FLOURISH_PASSWORD')
 
-main_html = get_html(main_url)
+main_html = requests.get(main_url).text
 main_soup = BeautifulSoup(main_html)
 main_post = main_soup.find("div", {"class": "post"})
 
