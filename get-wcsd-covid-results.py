@@ -16,6 +16,24 @@ except OSError:
     saved_html = {}
 
 
+# Collected from https://schoolcovidreportcard.health.ny.gov
+population_data = {
+    'Casey': {'Students': 618, 'Teachers': 72, 'Staff': 36},
+    'Country Parkway': {'Students': 493, 'Teachers': 59, 'Staff': 34},
+    'Dodge': {'Students': 557, 'Teachers': 64, 'Staff': 40},
+    'Forest': {'Students': 473, 'Teachers': 60, 'Staff': 38},
+    'Heim Elementary': {'Students': 640, 'Teachers': 61, 'Staff': 32},
+    'Heim Middle': {'Students': 596, 'Teachers': 78, 'Staff': 33},
+    'Maple East': {'Students': 640, 'Teachers': 64, 'Staff': 40},
+    'Maple West': {'Students': 654, 'Teachers': 63, 'Staff': 43},
+    'Mill': {'Students': 805, 'Teachers': 91, 'Staff': 40},
+    'Transit': {'Students': 866, 'Teachers': 87, 'Staff': 40},
+    'Williamsville East': {'Students': 964, 'Teachers': 92, 'Staff': 53},
+    'Williamsville North': {'Students': 1356, 'Teachers': 124, 'Staff': 83},
+    'Williamsville South': {'Students': 850, 'Teachers': 79, 'Staff': 50},
+}
+
+
 def get_html(url):
     """Get HTML response from URL from either cached object or request"""
     if url not in saved_html:
@@ -42,7 +60,9 @@ for li in main_post.find_all('li'):
 
 results_list = []
 # Names in report that should be considered the same, probably typos, format is {'Incorrect name': 'Correct name'}
-fixed_names = {'Forest Elementary': 'Forest', 'District': 'District Office'}
+fixed_names = {'Forest Elementary': 'Forest'}
+# Omit non-school data
+omitted_names = ['District', 'District Office']
 # URLs are in descending order by default
 for daily_url in reversed(daily_urls):
     soup = BeautifulSoup(get_html(daily_url))
@@ -60,6 +80,9 @@ for daily_url in reversed(daily_urls):
         school, cases = (
             result.strip() for result in cases_text_no_prefix.split(':'))
         school = fixed_names[school] if school in fixed_names else school
+        if school in omitted_names:
+            print(f'Skipping "{school}"')
+            continue
         cases = re.match(regex, cases).group(1)
         result_dict[school] = int(cases)
         print(f'- {school}: {cases}')
@@ -70,13 +93,32 @@ results_df = results_df.set_index('Report Name')
 # Replace missing days NaN with 0
 results_df = results_df.fillna(0)
 
+# Save HTML for re-use
+with open(saved_html_filename, 'w') as f:
+    json.dump(saved_html, f)
+
 # Create new dataframes for outputs we want
 results_df_cumulative = results_df.cumsum()
 results_df_5_day_rolling_mean = results_df.rolling(5).mean()
 
-# Save HTML for re-use
-with open(saved_html_filename, 'w') as f:
-    json.dump(saved_html, f)
+
+def add_per_capita(df_input, per_capita_factor=100):
+    """Given a Dataframe, take each school's data and add a secondary key for `per_capita_factor` students"""
+    df_input_dict = df_input.to_dict()
+    dict_with_per_capita = {}
+    for school, results in df_input_dict.items():
+        school_population = population_data[school]['Students']
+        dict_with_per_capita[school] = {}
+        for report, result in results.items():
+            dict_with_per_capita[school][(report, f'Per {per_capita_factor} Students')] = \
+                (result / school_population) * per_capita_factor
+            dict_with_per_capita[school][(report, 'Total')] = result
+
+    return pd.DataFrame(dict_with_per_capita)
+
+
+results_df_cumulative_with_per_capita = add_per_capita(results_df_cumulative)
+results_df_5_day_rolling_mean_with_per_capita = add_per_capita(results_df_5_day_rolling_mean)
 
 if email and password:
     def get_soup(url):
@@ -97,11 +139,11 @@ if email and password:
     charts = [{
         'id': 7811272,
         'upload_api': 12489630,
-        'data': results_df_5_day_rolling_mean
+        'data': results_df_5_day_rolling_mean_with_per_capita
     }, {
         'id': 7789940,
         'upload_api': 12457147,
-        'data': results_df_cumulative
+        'data': results_df_cumulative_with_per_capita
     }]
     for chart in charts:
         login_url = 'https://app.flourish.studio/login'
@@ -124,8 +166,8 @@ if email and password:
         upload_soup = get_soup(upload_url)
         # Regex to find version number in <script> html elements. This is the only place I could find it:
         # <script>
-        # 		Flourish.public_url_prefix = "https://public.flourish.studio/";
-        # 		Flourish.initVisualisationEditor({"id":868769,"username":"brokenlego","company_type":null,"has_active_subscription":false,"can_make_new_projects":true,"tour_intro_status":3,"role":null,"company_id":null,"features":{},"name":"Null","email":"jesse@jessejoe.com","organisation":null,"organisation_role":null,"organisation_type":null,"company_name":null,"is_business_customer":false,"feature_bundle_name":"Public","show_upgrade_options":true,"support_email":"hello@flourish.studio","further_payment_action_required":null,"can_remove_flourish_attribution":false,"can_download_svg":true,"can_export_images":true,"can_present":true,"template_settings_overrides":{},"min_auto_republish_interval":86400,"is_superuser":false}, new Flourish.Visualisation(7789940, 29, {"name":"WCSD ...
+        # Flourish.public_url_prefix = "https://public.flourish.studio/";
+        # Flourish.initVisualisationEditor({"id":868769,new Flourish.Visualisation(7789940, 29, {"name":"WCSD
         regex = r'Flourish.Visualisation\(\d+,\s*(\d*)'
         existing_version = next((re.search(regex, elem).group(1)
                                  for elem in upload_soup(text=re.compile(regex))),
