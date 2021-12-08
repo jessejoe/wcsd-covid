@@ -120,6 +120,7 @@ def add_per_capita(df_input, per_capita_factor=100):
 results_df_cumulative_with_per_capita = add_per_capita(results_df_cumulative)
 results_df_5_day_rolling_mean_with_per_capita = add_per_capita(results_df_5_day_rolling_mean)
 
+# Try to publish data to Flourish only if environment variables were set
 if email and password:
     def get_soup(url):
         resp = s.get(url)
@@ -132,7 +133,6 @@ if email and password:
         return soup.find('input', {'name': 'csrf_token'}).get('value')
 
 
-    # Posting results to Flourish
     s = requests.session()
 
     # Each Flourish chart has an ID (seen in the URL) and upload ID (may have to look at inspector or html source)
