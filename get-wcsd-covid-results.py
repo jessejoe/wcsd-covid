@@ -15,7 +15,6 @@ try:
 except OSError:
     saved_html = {}
 
-
 # Collected from https://schoolcovidreportcard.health.ny.gov
 population_data = {
     'Casey': {'Students': 618, 'Teachers': 72, 'Staff': 36},
@@ -31,7 +30,7 @@ population_data = {
     'Williamsville East': {'Students': 964, 'Teachers': 92, 'Staff': 53},
     'Williamsville North': {'Students': 1356, 'Teachers': 124, 'Staff': 83},
     'Williamsville South': {'Students': 850, 'Teachers': 79, 'Staff': 50},
-}
+}  # yapf: disable
 
 
 def get_html(url):
@@ -73,7 +72,11 @@ for daily_url in reversed(daily_urls):
     # Sometimes elements are <p> and sometimes <div>, so just use regex to look for any element with matching text
     # case_elems = post.find_all('div')
     regex = r'(\d+)\s*Case'
-    cases_elems = [elem.parent.parent for elem in post(text=re.compile(regex))]
+    # Sometimes the element is an <a>, and sometimes not
+    cases_elems = [
+        elem.parent.parent if elem.parent.name == 'a' else elem.parent
+        for elem in post(text=re.compile(regex))
+    ]
     for cases_elem in cases_elems:
         cases_text = cases_elem.get_text()
         cases_text_no_prefix = re.sub(r'^-\s+', '', cases_text)
@@ -118,21 +121,22 @@ def add_per_capita(df_input, per_capita_factor=100):
 
 
 results_df_cumulative_with_per_capita = add_per_capita(results_df_cumulative)
-results_df_5_day_rolling_mean_with_per_capita = add_per_capita(results_df_5_day_rolling_mean)
+results_df_5_day_rolling_mean_with_per_capita = add_per_capita(
+    results_df_5_day_rolling_mean)
 
 # Try to publish data to Flourish only if environment variables were set
 if email and password:
+
     def get_soup(url):
         resp = s.get(url)
         resp.raise_for_status()
         return BeautifulSoup(resp.text)
 
-
     def get_csrf_token(url):
         soup = get_soup(url)
         return soup.find('input', {'name': 'csrf_token'}).get('value')
 
-
+    # Posting results to Flourish
     s = requests.session()
 
     # Each Flourish chart has an ID (seen in the URL) and upload ID (may have to look at inspector or html source)
@@ -169,9 +173,9 @@ if email and password:
         # Flourish.public_url_prefix = "https://public.flourish.studio/";
         # Flourish.initVisualisationEditor({"id":868769,new Flourish.Visualisation(7789940, 29, {"name":"WCSD
         regex = r'Flourish.Visualisation\(\d+,\s*(\d*)'
-        existing_version = next((re.search(regex, elem).group(1)
-                                 for elem in upload_soup(text=re.compile(regex))),
-                                None)
+        existing_version = next(
+            (re.search(regex, elem).group(1)
+             for elem in upload_soup(text=re.compile(regex))), None)
 
         # Upload data
         payload = {
