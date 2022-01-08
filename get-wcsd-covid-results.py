@@ -59,7 +59,12 @@ for li in main_post.find_all('li'):
 
 results_list = []
 # Names in report that should be considered the same, probably typos, format is {'Incorrect name': 'Correct name'}
-fixed_names = {'Forest Elementary': 'Forest', 'North': "Williamsville North"}
+fixed_names = {
+    'Forest Elementary': 'Forest',
+    'East': 'Williamsville East',
+    'North': 'Williamsville North',
+    'South': 'Williamsville South'
+}
 # Omit non-school data
 omitted_names = ['District', 'District Office']
 # URLs are in descending order by default
