@@ -60,6 +60,7 @@ for li in main_post.find_all('li'):
 results_list = []
 # Names in report that should be considered the same, probably typos, format is {'Incorrect name': 'Correct name'}
 fixed_names = {
+    'Dodge Elementary': 'Dodge',
     'Forest Elementary': 'Forest',
     'East': 'Williamsville East',
     'North': 'Williamsville North',
